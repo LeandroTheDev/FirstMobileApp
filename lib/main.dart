@@ -1,57 +1,85 @@
-// ignore_for_file: camel_case_types, prefer_const_constructors, prefer_const_literals_to_create_immutables
-
 import 'package:flutter/material.dart';
+import './questionario.dart';
+import './resultado.dart';
 
 void main() {
-  runApp(meuApp());
+  runApp(const PerguntaApp());
 }
 
-class meuApp extends StatefulWidget {
-  const meuApp({Key? key}) : super(key: key);
+class PerguntaApp extends StatefulWidget {
+  const PerguntaApp({Key? key}) : super(key: key);
 
   @override
-  State<meuApp> createState() => meuAppBody();
+  State<PerguntaApp> createState() => _PerguntaAppState();
 }
 
-class meuAppBody extends State<meuApp> {
+class _PerguntaAppState extends State<PerguntaApp> {
+  var _perguntaSelecionada = 0;
+  var _pontuacaoTotal = 0;
+  final _perguntas = const [
+    {
+      'texto': 'Qual é a sua cor favorita?',
+      'respostas': [
+        {'texto': 'Preto', 'pontuacao': 10},
+        {'texto': 'Vermelho', 'pontuacao': 5},
+        {'texto': 'Verde', 'pontuacao': 3},
+        {'texto': 'Branco', 'pontuacao': 1},
+      ],
+    },
+    {
+      'texto': 'Qual é o seu animal favorito?',
+      'respostas': [
+        {'texto': 'Coelho', 'pontuacao': 10},
+        {'texto': 'Cobra', 'pontuacao': 5},
+        {'texto': 'Elefante', 'pontuacao': 3},
+        {'texto': 'Leão', 'pontuacao': 1},
+      ],
+    },
+    {
+      'texto': 'Qual é o seu instrutor favorito?',
+      'respostas': [
+        {'texto': 'Leo', 'pontuacao': 10},
+        {'texto': 'Maria', 'pontuacao': 5},
+        {'texto': 'João', 'pontuacao': 3},
+        {'texto': 'Pedro', 'pontuacao': 1},
+      ],
+    }
+  ];
 
-  int NumPerguntas = 0;
+  void _responder(int pontuacao) {
+    if (temPerguntaSelecionada) {
+      setState(() {
+        _perguntaSelecionada++;
+        _pontuacaoTotal += pontuacao;
+      });
+    }
+  }
 
-  void responder() {
+  void _reiniciarQuestionario() {
     setState(() {
-      NumPerguntas++;
+      _perguntaSelecionada = 0;
+      _pontuacaoTotal = 0;
     });
   }
 
-  @override
-    final Perguntas = [
-    "Matchup contra riven e irelia builda oq?",
-    "Matchup de gp contra yorick lixera build arco ou garra?"
-  ];
+  bool get temPerguntaSelecionada {
+    return _perguntaSelecionada < _perguntas.length;
+  }
 
+  @override
   Widget build(BuildContext context) {
-return MaterialApp(
+    return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: const Text("Perguntas"),
+          title: const Text('Perguntas'),
         ),
-        body: Column(
-          children: [
-            Text(Perguntas[NumPerguntas]),
-             ElevatedButton(
-              child: Text('CDR'),
-              onPressed: responder,
-            ),
-            ElevatedButton(
-              child: Text('DANO'),
-              onPressed: responder,
-            ),
-            ElevatedButton(
-              child: Text('VIDA'),
-              onPressed: responder,
-            ),
-          ],
-        ),
+        body: temPerguntaSelecionada
+            ? Questionario(
+                perguntas: _perguntas,
+                perguntaSelecionada: _perguntaSelecionada,
+                quandoResponder: _responder,
+              )
+            : Resultado(_pontuacaoTotal, _reiniciarQuestionario),
       ),
     );
   }
