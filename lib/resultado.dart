@@ -10,11 +10,11 @@ class Resultado extends StatelessWidget {
     if(pontuation < 8){
       return "Parabens";
     }else if(pontuation < 12){
-      return "Burro";
+      return "Maravilhoso";
     }else if(pontuation < 16){
-      return "Anta";
+      return "Sensacional";
     }else{
-      return "Vai toma no cu";
+      return "Incrivel";
     }
   }
   @override
